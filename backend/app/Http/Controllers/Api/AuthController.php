@@ -65,7 +65,7 @@ class AuthController extends Controller
 
     public function spaLogin(Request $request)
     {
-        if(! Auth::attempt($request->only('email', 'password'))) {
+        if (! Auth::attempt($request->only('email', 'password'))) {
             throw ValidationException::withMessages([
                 'email' => ['Invalid credentials']
             ]);
@@ -84,6 +84,24 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
 
         return redirect()->route('login');
+    }
 
+    public function spaRegister(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|min:8',
+        ]);
+
+        $user = User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => $validated['password'], // auto-hashed (Laravel 12)
+        ]);
+        Auth::login($user);
+
+        $request->session()->regenerateToken();
+        return redirect()->route('index');
     }
 }

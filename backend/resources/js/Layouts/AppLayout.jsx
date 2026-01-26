@@ -1,15 +1,13 @@
 import { Link, router, usePage } from "@inertiajs/react";
 import ThemeToogle from "../Components/ThemeToogle";
 
-export default function AppLayout({children})
-{
-    const {auth} = usePage().props;
+export default function AppLayout({ children }) {
+    const { auth } = usePage().props;
 
     const handleLogout = (e) => {
         e.preventDefault();
-        router.post('/logout');
-    }
-
+        router.post("/logout");
+    };
 
     return (
         <>
@@ -19,19 +17,18 @@ export default function AppLayout({children})
                 <ThemeToogle />
                 {auth.user ? (
                     <form onSubmit={handleLogout}>
-                        <button type="submit">
-                            Logout
-                        </button>
+                        <button type="submit">Logout</button>
                     </form>
                 ) : (
-                    <Link href="/login" >
-                        Login
-                    </Link>
+                    <>
+                        <Link href="/login">Login</Link>
+                        <Link href="/register">Register</Link>
+                    </>
                 )}
             </header>
             <main className="py-2 px-3 max-w-7xl w-full mx-auto">
                 {children}
             </main>
         </>
-    )
+    );
 }

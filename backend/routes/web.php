@@ -11,8 +11,16 @@ Route::get('/login', function () {
     return inertia('Auth/Login');
 })->name('login');
 
+Route::get('/register', function () {
+    if (Auth::user()) {
+        return redirect()->route('index');
+    }
+    return inertia('Auth/Register');
+});
+
 // Use this for your Inertia form submission
 Route::post('/login-action', [AuthController::class, 'spaLogin']);
+Route::post('/register-action', [AuthController::class, 'spaRegister']);
 
 Route::middleware('auth')->group(function () {
     Route::get('/', function () {
