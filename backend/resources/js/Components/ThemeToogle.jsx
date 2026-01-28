@@ -5,6 +5,8 @@ export default function ThemeToogle()
     const [theme, setTheme] = useState(() =>
     {
         if(typeof window !== 'undefined'){
+            const saved = localStorage.getItem('theme');
+            if (saved) return saved;
             return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
         }
         return 'light';
@@ -19,6 +21,7 @@ export default function ThemeToogle()
         } else {
             root.classList.remove('dark');
         }
+        localStorage.setItem('theme', theme);
     }, [theme])
 
     const toogleTheme = () => { setTheme(pre => pre === 'light' ? 'dark' : 'light')}
@@ -26,7 +29,7 @@ export default function ThemeToogle()
     return (
         <div>
             <button onClick={toogleTheme}>
-                Toogle
+                Toggle
             </button>
         </div>
     )

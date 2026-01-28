@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 export default function Home() {
     const [photos, setPhotos] = useState([]);
+    const [file, setFiles] = useState(null);
     const [pagination, setPagination] = useState(null);
     const [loading, setLoading] = useState(false);
 
@@ -27,6 +28,24 @@ export default function Home() {
         }
     };
 
+    const createPhotos = async (e) => {
+        e.preventDefault();
+        if(!file || file === null )return;
+        try {
+            const formData = new FormData();
+            formData.append('photo', file);
+            await axios.post("/api/photos", formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
+            loadPhotos();
+        } catch(e)
+        {
+            console.error(e);
+        }
+    }
+
     useEffect(() => {
         loadPhotos();
     }, []);
@@ -34,7 +53,10 @@ export default function Home() {
     return (
         <AppLayout>
             <div className="">
-                <h1>Hello React</h1>
+                <form onSubmit={createPhotos} method="post">
+                    <input type="file" name="photo" id="photo" onChange={(e) => setFiles(e.target.files[0])} />
+                    <button type="submit">Upload photo</button>
+                </form>
                 {loading ? (
                     <p>Loading...</p>
                 ) : photos.length === 0 ? (
